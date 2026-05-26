@@ -1,0 +1,13 @@
+# Private content lives in its own repo — never tracked here
+content/
+
+# Obsidian workspace state
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache/
+
+# Generated files
+scripts/maintenance-prompt.md
+
+# OS noise
+.DS_Store
