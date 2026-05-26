@@ -1,60 +1,32 @@
-# CLAUDE.md — Personal LLM Knowledge Base (NotebookLM Hybrid)
+# CLAUDE.md — Personal LLM Knowledge Base
 
-## Core Mission
-I am the intelligent maintainer of this knowledge base. The owner feeds high-quality
-Markdown from NotebookLM into `content/raw/`. I deeply integrate that information into a
-clean, well-linked wiki in `content/wiki/`.
-
-## Strict Operating Rules (Karpathy Principles)
-1. Think Before Acting — Never assume. Surface tradeoffs. Ask if unclear.
-2. Simplicity First — Keep structure minimal and elegant.
-3. Surgical Changes — Only touch what needs changing. Match existing style.
-4. Goal-Driven — Define success criteria and verify before finishing.
+## Hard constraints
+- `content/` must never enter this repo's git history. Never `git add` / commit / push anything under `content/` from the system root.
+- `content/raw/` is immutable source. Read only.
+- For commits in `content/`, suggest a message; let the owner run it.
 
 ## Paths
-- Source (read-only): `content/raw/`
-- Wiki (maintained):   `content/wiki/`
-- Index:               `content/wiki/index.md`
-- Log:                 `content/wiki/log.md`
-- Page templates:      `templates/`
+- Read-only source: `content/raw/`
+- Wiki: `content/wiki/` — subfolders `sources/`, `concepts/`, `entities/`
+- Read `content/wiki/index.md` first.
+- Templates: `templates/{source,concept,entity}.md`
+- Conventions (filenames, wikilink format, index/log structure): match what's already in `content/wiki/`. `log.md` documents its own format.
 
-## Ingestion Workflow
-When new files appear in `content/raw/`:
-- Read them thoroughly.
-- Create/update a summary page in `content/wiki/sources/` (use `templates/source.md`).
-- Extract and create/update concept pages (`templates/concept.md`) and entity pages
-  (`templates/entity.md`).
-- Add bidirectional `[[wikilinks]]`.
-- Update `content/wiki/index.md`.
-- Append to `content/wiki/log.md` using: `## [YYYY-MM-DD] ingest | <filename>.md`
-- **Never modify anything inside `content/raw/`.**
+## Source-grounding
+Outside a `## Synthesis` heading, page content must be source-grounded — every claim traceable via `[[wikilinks]]` to a `wiki/sources/` page. Inside a `## Synthesis` heading, original takes, connections, and framing beyond the sources are encouraged.
 
-## Manual Maintenance Workflow (owner-triggered, end of day)
-When the owner pastes the maintenance prompt:
-1. Read `content/wiki/index.md` to understand the structure.
-2. Run a full wiki health check (lint):
-   - Contradictions, stale information, orphan pages, broken `[[wikilinks]]`,
-     missing connections, merge/improve opportunities.
-3. Make only surgical, high-quality changes.
-4. Append a maintenance entry to `content/wiki/log.md`.
-5. End by summarising exactly what changed and why, so the owner can review the diff.
+## Ingest new files in `content/raw/`
+For each file:
+1. Read fully.
+2. Create a source page from `templates/source.md`.
+3. Extract concepts and entities into pages from their templates. Extend existing pages; don't overwrite.
+4. Wire bidirectional `[[wikilinks]]`.
+5. Update `content/wiki/index.md`.
+6. Append to `content/wiki/log.md`.
 
-## Version Control & Rollback Discipline
-- The content repo (`content/`) is the safety net for wiki edits.
-- Before a maintenance or large ingestion pass, ensure the content repo is clean
-  (committed) so there is a rollback point.
-- After a pass, the owner reviews `git -C content diff` and commits if satisfied,
-  or `git -C content restore .` to discard.
-- Suggest a commit message; let the owner run the commit.
+Done means: every new wikilink resolves, no orphans, every concept/entity traces to a source.
 
-## GitHub & Privacy Rules (hard constraints)
-- `content/` (raw + wiki) is versioned **only** in the local content repo.
-- **Never** stage, add, or commit anything under `content/` into the system repo.
-- **Never** push `content/` to the public GitHub remote.
-- Only system files (`CLAUDE.md`, `scripts/`, `templates/`, `README.md`, `.gitignore`,
-  `launchd/`, `.obsidian/` config) belong on GitHub.
+PDFs in `content/raw/` are read with the Read tool; the source page still lives at `wiki/sources/<kebab-title>.md` and references the original file by its full name.
 
-## Query Workflow
-- Always start by reading `content/wiki/index.md`.
-- Give well-cited answers grounded in the wiki/sources.
-- Offer to file high-value answers back into the wiki as new pages.
+## Maintenance (owner pastes `scripts/maintenance-prompt.md`)
+Lint the wiki: broken links, orphans, asymmetric backlinks, contradictions, duplicates, merge opportunities. Surgical changes only. Flag contradictions in the summary — don't silently pick winners. Append to `log.md`. Summarise the diff.

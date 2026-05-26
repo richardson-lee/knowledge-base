@@ -10,6 +10,9 @@ category:   # person | org | tool | standard | other
 
 ## Relevance
 
+## Synthesis
+<!-- Optional. Original takes, connections, or framing beyond what sources state. Everything outside this heading must be source-grounded. -->
+
 ## Related
 - [[ ]]
 
