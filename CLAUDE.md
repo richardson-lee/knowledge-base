@@ -10,7 +10,7 @@
 - Wiki: `content/wiki/` — subfolders `sources/`, `concepts/`, `entities/`
 - Read `content/wiki/index.md` first.
 - Templates: `templates/{source,concept,entity}.md`
-- Conventions (filenames, wikilink format, index/log structure): match what's already in `content/wiki/`. `log.md` documents its own format.
+- Conventions: kebab-case page filenames, `[[wikilinks]]` between pages, section structure as seeded in `content/wiki/index.md` and `content/wiki/log.md`. `log.md` documents its own format.
 
 ## Source-grounding
 Outside a `## Synthesis` heading, page content must be source-grounded — every claim traceable via `[[wikilinks]]` to a `wiki/sources/` page. Inside a `## Synthesis` heading, original takes, connections, and framing beyond the sources are encouraged.

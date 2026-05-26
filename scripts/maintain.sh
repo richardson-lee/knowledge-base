@@ -12,8 +12,6 @@ cd "$ROOT"
 TODAY="$(date +%Y-%m-%d)"
 PROMPT_FILE="scripts/maintenance-prompt.md"
 
-# NOTE: unquoted heredoc delimiter so $TODAY expands. (A quoted 'EOF' would write the
-# variable literally — that was a bug in the first draft.)
 cat > "$PROMPT_FILE" <<EOF
 # Daily Maintenance Task — $TODAY
 
