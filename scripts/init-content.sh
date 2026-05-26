@@ -13,11 +13,16 @@ if [ -d content/.git ]; then
   exit 1
 fi
 
+if [ -e content/wiki/index.md ] || [ -e content/wiki/log.md ]; then
+  echo "content/wiki/{index,log}.md already exists — refusing to overwrite. Aborting." >&2
+  echo "If you are restoring from a backup, re-init git inside content/ manually." >&2
+  exit 1
+fi
+
 mkdir -p content/raw content/wiki/sources content/wiki/concepts content/wiki/entities
 
 cat > content/.gitignore <<'EOF'
 .DS_Store
-.obsidian/workspace.json
 EOF
 
 touch content/raw/.gitkeep content/wiki/sources/.gitkeep content/wiki/concepts/.gitkeep content/wiki/entities/.gitkeep

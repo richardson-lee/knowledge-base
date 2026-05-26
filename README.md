@@ -89,9 +89,9 @@ never to modify it.
 **Page filenames are kebab-case of the title** (e.g. `Security Culture` →
 `security-culture.md`).
 
-**Synthesis is allowed only under `## Synthesis` headings** in wiki pages. Content
-outside that heading must be source-grounded with `[[wikilinks]]` back to a page in
-`content/wiki/sources/`.
+**Synthesis is allowed only under a level-2 `## Synthesis` heading** in wiki pages.
+Content outside that heading must be source-grounded with `[[wikilinks]]` back to a
+page in `content/wiki/sources/`.
 
 ---
 
@@ -124,6 +124,9 @@ is a clean rollback point.
 
 ## Setup (one-time)
 
+> If you cloned this repo, the system repo is already initialised — **skip step 3**.
+> Steps 1, 2, and 4 still apply.
+
 ```bash
 # 1. Make scripts executable.
 chmod +x scripts/maintain.sh scripts/init-content.sh
@@ -132,7 +135,7 @@ chmod +x scripts/maintain.sh scripts/init-content.sh
 #    seeds index.md and log.md, and initialises a fresh git repo inside content/.
 ./scripts/init-content.sh
 
-# 3. Initialise the system repo (publishable).
+# 3. (Bootstrap only — skip if you cloned.) Initialise the system repo.
 git init
 git add -A
 git commit -m "init: knowledge base system core"
