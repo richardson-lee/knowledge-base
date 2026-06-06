@@ -1,7 +1,7 @@
 #!/bin/bash
 # Manual end-of-day maintenance helper.
 # Generates today's maintenance prompt and copies it to the clipboard so it can be
-# pasted into an interactive Claude Code session. Does NOT run Claude itself.
+# pasted into an interactive Grok Build session. Does NOT run Grok itself.
 
 set -euo pipefail
 
@@ -14,6 +14,8 @@ PROMPT_FILE="scripts/maintenance-prompt.md"
 
 cat > "$PROMPT_FILE" <<EOF
 # Daily Maintenance Task — $TODAY
+
+Run the /maintain skill (or follow AGENTS.md maintenance rules).
 
 Perform a full maintenance and lint pass on the wiki:
 
@@ -35,7 +37,7 @@ EOF
 echo "Maintenance prompt written to $PROMPT_FILE"
 if command -v pbcopy >/dev/null 2>&1; then
   pbcopy < "$PROMPT_FILE"
-  echo "Copied to clipboard — paste it into an interactive Claude Code session in this folder."
+  echo "Copied to clipboard — paste into Grok Build here, or run /maintain."
 else
-  echo "Open Claude Code in this folder and paste the contents of $PROMPT_FILE."
+  echo "Open Grok Build in this folder and run /maintain, or paste the contents of $PROMPT_FILE."
 fi

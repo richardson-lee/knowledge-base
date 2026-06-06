@@ -1,8 +1,8 @@
 # Personal LLM Knowledge Base
 
 A system for turning Markdown and PDF sources (NotebookLM exports, generic Markdown,
-or PDFs) into a tightly linked personal wiki, maintained by Claude Code in an
-interactive session. The system is shareable; the notes inside it are not.
+or PDFs) into a tightly linked personal wiki, maintained by Grok Build (Composer 2.5)
+in an interactive session. The system is shareable; the notes inside it are not.
 
 ---
 
@@ -12,7 +12,7 @@ This project is **two independent git repositories**, on purpose:
 
 | Repo | Root | Tracks | Remote |
 |---|---|---|---|
-| **System** | `knowledge-base/` | `CLAUDE.md`, `README.md`, `scripts/`, `templates/`, `launchd/`, partial `.obsidian/` config, `.gitignore` | GitHub (safe to publish) |
+| **System** | `knowledge-base/` | `AGENTS.md`, `README.md`, `scripts/`, `templates/`, `.grok/skills/`, `launchd/`, partial `.obsidian/` config, `.gitignore` | GitHub (safe to publish) |
 | **Content** | `knowledge-base/content/` | `raw/` (NotebookLM .md, generic .md, or PDF) and `wiki/` (generated pages) | **Local only**, or a *private* remote / backup target |
 
 Why two repos instead of one repo plus `.gitignore`:
@@ -34,8 +34,12 @@ GitHub repo, an external drive, or Time Machine).
 ```
 knowledge-base/                         # SYSTEM repo  → GitHub
 ├── .gitignore
-├── CLAUDE.md                           # operating instructions for Claude Code
+├── AGENTS.md                           # project rules for Grok Build
 ├── README.md                           # this file
+├── .grok/
+│   └── skills/
+│       ├── ingest/SKILL.md             # /ingest — process new raw sources
+│       └── maintain/SKILL.md           # /maintain — wiki lint pass
 ├── scripts/
 │   ├── init-content.sh                 # one-time scaffolder for content/
 │   ├── maintain.sh                     # end-of-day maintenance helper
@@ -47,7 +51,6 @@ knowledge-base/                         # SYSTEM repo  → GitHub
 ├── launchd/
 │   └── com.user.kb-maintenance.plist   # optional 18:00 reminder, NOT autonomous editing
 ├── .obsidian/                          # vault root = knowledge-base/
-├── .claude/                            # local Claude Code settings
 └── content/                            # CONTENT repo → LOCAL ONLY
     ├── .gitignore
     ├── raw/                            # Source files (NotebookLM .md, generic .md, or PDF) — immutable
@@ -61,11 +64,37 @@ knowledge-base/                         # SYSTEM repo  → GitHub
 
 ---
 
+## Grok Build setup
+
+Launch Grok Build from the system root:
+
+```bash
+cd knowledge-base
+grok
+```
+
+Recommended model for this project: **Composer 2.5 Fast**
+
+```
+/model grok-composer-2.5-fast
+```
+
+Grok auto-loads `AGENTS.md` as project rules. Project skills appear as slash commands:
+
+| Command | What it does |
+|---------|--------------|
+| `/ingest` | Process new files in `content/raw/` into wiki pages |
+| `/maintain` | Full wiki lint and maintenance pass |
+
+Verify rules are loaded with `grok inspect`.
+
+---
+
 ## Ingestion workflow
 
 1. Drop a source file (NotebookLM .md, generic .md, or PDF) into `content/raw/`.
-2. Open an interactive Claude Code session at the system root (`knowledge-base/`).
-3. Ask it to ingest new files. Per `CLAUDE.md`, Claude will:
+2. Open Grok Build at the system root (`knowledge-base/`).
+3. Run `/ingest` or ask it to ingest new files. Per `AGENTS.md`, Grok will:
    - Read each new file in `content/raw/` thoroughly (PDFs supported natively via the Read tool).
    - Create a summary page in `content/wiki/sources/` from `templates/source.md`.
    - Create or update concept pages in `content/wiki/concepts/` and entity pages in
@@ -83,7 +112,7 @@ knowledge-base/                         # SYSTEM repo  → GitHub
    git -C content reset --hard && git -C content clean -fd
    ```
 
-**Anything inside `content/raw/` is treated as immutable source.** Claude is instructed
+**Anything inside `content/raw/` is treated as immutable source.** Grok is instructed
 never to modify it.
 
 **Page filenames are kebab-case of the title** (e.g. `Security Culture` →
@@ -97,14 +126,14 @@ page in `content/wiki/sources/`.
 
 ## Manual end-of-day maintenance routine
 
-Maintenance is owner-triggered. There is **no headless `claude -p` job and no
+Maintenance is owner-triggered. There is **no headless automation and no
 launchd-triggered editing**. The flow:
 
 1. From the system root, run `./scripts/maintain.sh`.
 2. The script generates `scripts/maintenance-prompt.md` (with today's date substituted)
    and copies it to the clipboard.
-3. Open an interactive Claude Code session at the system root and paste the prompt.
-4. Claude reads `content/wiki/index.md`, performs a full lint pass (contradictions,
+3. Open Grok Build at the system root and run `/maintain` or paste the prompt.
+4. Grok reads `content/wiki/index.md`, performs a full lint pass (contradictions,
    stale info, orphans, broken `[[wikilinks]]`, missing connections, merge
    opportunities), makes surgical changes, appends a maintenance entry to `log.md`,
    and summarises the diff.
@@ -164,7 +193,7 @@ Do **not** add a public remote to the content repo.
 
 `launchd/com.user.kb-maintenance.plist` is a notification-only LaunchAgent that posts
 a "Run end-of-day KB maintenance" notification at 18:00 each day. It does not run
-Claude or touch the wiki. To install:
+Grok or touch the wiki. To install:
 
 ```bash
 cp launchd/com.user.kb-maintenance.plist ~/Library/LaunchAgents/
@@ -178,6 +207,6 @@ day is skipped.
 
 ## What's intentionally not here
 
-- No headless `claude -p` automation — maintenance is manual by design.
+- No headless automation — maintenance is manual by design.
 - No second remote on the content repo by default — opt in only.
 - No GitHub Actions, no CI, no auto-push — this is a personal tool.

@@ -57,4 +57,4 @@ git -C content init -q
 git -C content add -A
 git -C content commit -q -m "init: content vault (raw + wiki)"
 
-echo "Done. Drop files into content/raw/ and open Claude Code at the system root to ingest."
+echo "Done. Drop files into content/raw/, open Grok Build at the system root, and run /ingest."
